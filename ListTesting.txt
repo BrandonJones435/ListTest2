@@ -203,7 +203,7 @@ Define tests for at least 21 change scenarios, in addition to the 3 given as exa
     listIterator() throws UnsupportedOperationException
     listIterator(0) throws UnsupportedOperationException
     toString() returns "[A]"
-6) [A] -> addToFront(B) -> [B,A]
+6) [A] -> addToFront(B) -> [B,A] // Working on this one
   42 Tests:
     addToFront(C) throws no Exceptions
     addToRear(C) throws no Exceptions
