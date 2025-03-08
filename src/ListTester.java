@@ -20,7 +20,7 @@ public class ListTester {
 		goodList, badList, arrayList, singleLinkedList, doubleLinkedList
 	};
 	// TODO: THIS IS WHERE YOU CHOOSE WHICH LIST TO TEST
-	private final static ListToUse LIST_TO_USE = ListToUse.badList;
+	private final static ListToUse LIST_TO_USE = ListToUse.goodList;
 
 	// possible results expected in tests
 	private enum Result {
@@ -147,6 +147,8 @@ public class ListTester {
 		String STRING_CB = "CB";
 		Integer [] LIST_B = {ELEMENT_B};
 		String STRING_B = "B";
+		Integer [] LIST_CAB = {ELEMENT_C, ELEMENT_A, ELEMENT_B};
+		String STRING_CAB = "CAB";
 
 		//newly constructed empty list
 		testEmptyList(newList, "newList");
@@ -164,6 +166,7 @@ public class ListTester {
 		testSingleElementList(A_set0B_B, "A_set0B_BB", LIST_B, STRING_B); // 7 
 		//2-element to 1-element
 		//2-element to 3-element
+		testThreeElementList(AB_AddToFrontC_CAB, "AB_AddToFrontC_CAB", LIST_CAB, STRING_CAB); // 9
 		//2-element to changed 2-element via set()
 		testTwoElementList(AB_set0C_CB, "AB_set0C_CB", LIST_CB, STRING_CB); // 8
 		//3-element to 2-element
@@ -308,6 +311,16 @@ public class ListTester {
 		return list;
 	}
 	private Scenario<Integer> AB_set0C_CB = () -> AB_set0C_CB();
+
+	/** Scenario: [A,B] -> addToFront(C) -> [C,A,B] 
+	 * @return [C,A,B] after addToFrong(C)
+	 */
+	private IndexedUnsortedList<Integer> AB_addToFrontC_CAB() {
+		IndexedUnsortedList<Integer> list = AB_addToFrontC_CAB(); 
+		list.addToFront(ELEMENT_C);
+		return list;
+	}
+	private Scenario<Integer> AB_AddToFrontC_CAB = () -> AB_addToFrontC_CAB();
 	/////////////////////////////////
 	//XXX Tests for 0-element list
 	/////////////////////////////////
@@ -516,7 +529,44 @@ public class ListTester {
 	private void testThreeElementList(Scenario<Integer> scenario, String scenarioName, Integer[] contents, String contentsString) {
 		System.out.printf("\nSCENARIO: %s\n\n", scenarioName);
 		try {
-			//TODO: tests for scenarios resulting in a 3-element list
+			printTest(scenarioName + "_testAddToFront", testAddToFront(scenario.build(), ELEMENT_D, Result.NoException));
+			printTest(scenarioName + "_testAddToRear", testAddToRear(scenario.build(), ELEMENT_D, Result.NoException));
+			printTest(scenarioName + "_testAddAfter" + contentsString.charAt(0) + ELEMENT_D, testAddAfter(scenario.build(), contents[1], ELEMENT_D, Result.NoException));
+			printTest(scenarioName + "_testAddAfter" + contentsString.charAt(1) + contentsString.charAt(0), testAddAfter(scenario.build(), contents[0], contents[1], Result.NoException));
+			printTest(scenarioName + "_testAddAfter" + contentsString.charAt(1) + "X", testAddAfter(scenario.build(), ELEMENT_X, contents[0], Result.NoSuchElement));
+			printTest(scenarioName + "_testAddC", testAdd(scenario.build(), ELEMENT_C, Result.NoException));
+			printTest(scenarioName + "_testAdd(-1,C)", testAddAtIndex(scenario.build(), -1, ELEMENT_C, Result.IndexOutOfBounds));
+			printTest(scenarioName + "_testAdd(0,C)", testAddAtIndex(scenario.build(),0, ELEMENT_C, Result.NoException));
+			printTest(scenarioName + "_testAdd(1,C)", testAddAtIndex(scenario.build(), 1, ELEMENT_C, Result.NoException));
+			printTest(scenarioName + "_testAdd(2,C)", testAddAtIndex(scenario.build(), 2, ELEMENT_C, Result.NoException));
+			printTest(scenarioName + "_testAdd(3,C)", testAddAtIndex(scenario.build(), 3, ELEMENT_C, Result.IndexOutOfBounds));
+			printTest(scenarioName + "_testRemoveFirst", testRemoveFirst(scenario.build(), contents[0], Result.MatchingValue));
+			printTest(scenarioName + "_testRemoveLast", testRemoveLast(scenario.build(), contents[1], Result.MatchingValue));
+			printTest(scenarioName + "_testRemove" + contentsString.charAt(0), testRemoveElement(scenario.build(), contents[0], Result.MatchingValue));
+			printTest(scenarioName + "_testRemove" + contentsString.charAt(1), testRemoveElement(scenario.build(), contents[1], Result.MatchingValue));
+			printTest(scenarioName + "_testRemoveX", testRemoveElement(scenario.build(), ELEMENT_X, Result.NoSuchElement));
+			printTest(scenarioName + "_testRemove-1", testRemoveIndex(scenario.build(), -1, null, Result.IndexOutOfBounds));
+			printTest(scenarioName + "_testRemove0", testRemoveIndex(scenario.build(), 0, contents[0], Result.MatchingValue));
+			printTest(scenarioName + "_testRemove1", testRemoveIndex(scenario.build(), 1, contents[1], Result.MatchingValue));
+			printTest(scenarioName + "_testRemove2", testRemoveIndex(scenario.build(), 2, null, Result.IndexOutOfBounds));
+			printTest(scenarioName + "_testSet(-1,C)", testSet(scenario.build(), -1, ELEMENT_C, Result.IndexOutOfBounds));
+			printTest(scenarioName + "_testSet(0,C)", testSet(scenario.build(), 0, ELEMENT_C, Result.NoException));
+			printTest(scenarioName + "_testSet(1,C)", testSet(scenario.build(), 1, ELEMENT_C, Result.NoException));
+			printTest(scenarioName + "_testSet(2,C)", testSet(scenario.build(), 2, null, Result.IndexOutOfBounds));
+			printTest(scenarioName + "_testGet(-1)", testGet(scenario.build(), -1, null, Result.IndexOutOfBounds));
+			printTest(scenarioName + "_testGet(0)", testGet(scenario.build(), 0, contents[0], Result.MatchingValue));
+			printTest(scenarioName + "_testGet(1)", testGet(scenario.build(), 1, contents[1], Result.MatchingValue));
+			printTest(scenarioName + "_testGet(2)", testGet(scenario.build(), 2, null, Result.IndexOutOfBounds));
+			printTest(scenarioName + "_testIndexOf" + contentsString.charAt(0), testIndexOf(scenario.build(), contents[0], 0));
+			printTest(scenarioName + "_testIndexOf" + contentsString.charAt(1), testIndexOf(scenario.build(), contents[1], 1));
+			printTest(scenarioName + "_testIndexOfX", testIndexOf(scenario.build(), ELEMENT_X, -1));
+			printTest(scenarioName + "_testFirst", testFirst(scenario.build(), contents[0], Result.MatchingValue));
+			printTest(scenarioName + "_testLast", testLast(scenario.build(), contents[1], Result.MatchingValue));
+			printTest(scenarioName + "_testContains" + contentsString.charAt(0), testContains(scenario.build(), contents[0], Result.True));
+			printTest(scenarioName + "_testContains" + contentsString.charAt(1), testContains(scenario.build(), contents[1], Result.True));
+			printTest(scenarioName + "_testContainsX", testContains(scenario.build(), ELEMENT_X, Result.False));
+			printTest(scenarioName + "_testIsEmpty", testIsEmpty(scenario.build(), Result.False));
+			printTest(scenarioName + "_testSize", testSize(scenario.build(), 2));
 		} catch (Exception e) {
 			System.out.printf("***UNABLE TO RUN/COMPLETE %s***\n", scenarioName + " TESTS");
 			e.printStackTrace();

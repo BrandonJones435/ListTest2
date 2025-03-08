@@ -1,0 +1,8 @@
+{
+    // Tells the extension where your source files are
+    "java.project.sourcePaths": [
+      "src"
+    ],
+    // Tells the extension where to put compiled .class files
+    "java.project.outputPath": "bin"
+  }
