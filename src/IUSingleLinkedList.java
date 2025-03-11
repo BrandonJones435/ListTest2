@@ -128,5 +128,20 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
         // TODO Auto-generated method stub
         return 0;
     }
+    @Override
+    public String toString() {
+        //return ""; //TODO format: "[A, B, C]"
+        StringBuilder str = new StringBuilder();
+        str.append("["); 
+        for(T element : this) {
+            str.append(element.toString());
+            str.append(", ");
+        }
+        if (rear > 0) {
+            str.delete(str.length()-2, str.length());
+        }
+        str.append("]");
+        return str; 
+    }
 
 }
