@@ -1,6 +1,7 @@
 import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 /**
  * Single-linked-Node-based implementaiton of IndexedUnsortedList
@@ -12,6 +13,7 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
     Node<T> head; 
     Node<T> tail;
     int size = 0;
+    int rear = 0;
     @Override
     public void add(T element) {
         // TODO Auto-generated method stub
@@ -30,7 +32,6 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
         
     }
 
-    @Override
     public void addToFront(T element) {
         Node<T> newNode = new Node<T>(element);
         newNode.setNextNode(head); 
@@ -147,14 +148,37 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T removeFirst() {
-        // TODO Auto-generated method stub
-        return null;
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        T element = head.getElement();
+        head = head.getNextNode();
+        if (head == null || size == 1) {
+            tail = null;
+        }
+
+        size--;
+        return element;
     }
 
     @Override
     public T removeLast() {
-        // TODO Auto-generated method stub
-        return null;
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        T retVal = tail.getElement();
+        if (size == 1) {
+            head = tail = null; 
+        } else {
+            Node<T> newTail = head; 
+            while (newTail.getNextNode() != tail) {
+                newTail = newTail.getNextNode();
+            }        
+            tail = newTail; 
+            newTail.setNextNode(null);
+        }
+        size--;
+        return retVal;
     }
 
     @Override
