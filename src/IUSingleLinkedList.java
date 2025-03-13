@@ -1,3 +1,4 @@
+import java.security.NoSuchAlgorithmException;
 import java.util.Iterator;
 import java.util.ListIterator;
 
@@ -8,7 +9,9 @@ import java.util.ListIterator;
  */
 
 public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
-
+    Node<T> head; 
+    Node<T> tail;
+    int size = 0;
     @Override
     public void add(T element) {
         // TODO Auto-generated method stub
@@ -29,38 +32,73 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public void addToFront(T element) {
-        // TODO Auto-generated method stub
+        Node<T> newNode = new Node<T>(element);
+        newNode.setNextNode(head); 
+        if (isEmpty()) {
+            tail = newNode;
+        } else {
+            newNode.setNextNode(head);
+        }
+        head = newNode; 
+        size++;
         
     }
 
     @Override
     public void addToRear(T element) {
-        // TODO Auto-generated method stub
-        
+        Node<T> newNode = new Node<T>(element);
+        if (isEmpty()) {
+            head = newNode;
+        } else {
+            tail.setNextNode(newNode);
+        }
+        tail = newNode;
+        size++;
     }
 
     @Override
     public boolean contains(T target) {
-        // TODO Auto-generated method stub
-        return false;
+        return indexOf(target) > -1;
     }
 
     @Override
     public T first() {
-        // TODO Auto-generated method stub
-        return null;
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        return head.getElement();
     }
 
     @Override
     public T get(int index) {
-        // TODO Auto-generated method stub
-        return null;
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+        Node<T> currentNode = head; 
+        for (int i = 0; i < index; i++) {
+            currentNode = currentNode.getNextNode();
+        }
+        return currentNode.getElement();
     }
 
     @Override
     public int indexOf(T element) {
-        // TODO Auto-generated method stub
-        return 0;
+        Node<T> currentNode = head; 
+        int currentIndex = 0;
+        boolean foundIt = false; 
+        while(currentNode != null && !foundIt) {
+            if (currentNode.getElement().equals(element);) {
+                foundIt = true;
+            }  else {
+                currentNode = currentNode.getNextNode();
+                currentIndex++;
+            }
+        }
+        if (!foundIt) {
+            currentIndex = -1; 
+        } else {
+            return currentIndex; 
+        }
     }
 
     @Override
@@ -77,7 +115,9 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T last() {
-        // TODO Auto-generated method stub
+        if (isEmpty()) {
+
+        }
         return null;
     }
 
@@ -125,8 +165,7 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public int size() {
-        // TODO Auto-generated method stub
-        return 0;
+        return size == 0;
     }
     @Override
     public String toString() {

@@ -540,7 +540,7 @@ public class ListTester {
 			printTest(scenarioName + "_testAdd(1,C)", testAddAtIndex(scenario.build(), 1, ELEMENT_D, Result.NoException));
 			printTest(scenarioName + "_testAdd(2,C)", testAddAtIndex(scenario.build(), 2, ELEMENT_D, Result.NoException));
 			printTest(scenarioName + "_testAdd(3,C)", testAddAtIndex(scenario.build(), 3, ELEMENT_D, Result.NoException));
-			printTest(scenarioName + "_testAdd(3,C)", testAddAtIndex(scenario.build(), 4, ELEMENT_D, Result.IndexOutOfBounds));
+			printTest(scenarioName + "_testAdd(4,C)", testAddAtIndex(scenario.build(), 4, ELEMENT_D, Result.IndexOutOfBounds));
 			printTest(scenarioName + "_testRemoveFirst", testRemoveFirst(scenario.build(), contents[0], Result.MatchingValue));
 			printTest(scenarioName + "_testRemoveLast", testRemoveLast(scenario.build(), contents[2], Result.MatchingValue));
 			printTest(scenarioName + "_testRemove" + contentsString.charAt(0), testRemoveElement(scenario.build(), contents[0], Result.MatchingValue));
