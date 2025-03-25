@@ -1,4 +1,5 @@
 import java.security.NoSuchAlgorithmException;
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.ListIterator;
 import java.util.NoSuchElementException;
@@ -14,6 +15,7 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
     Node<T> tail;
     int size = 0;
     int rear = 0;
+    int modCount = 0;
     @Override
     public void add(T element) {
         // TODO Auto-generated method stub
@@ -42,6 +44,7 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
         }
         head = newNode; 
         size++;
+        modCount++;
         
     }
 
@@ -55,6 +58,7 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
         }
         tail = newNode;
         size++;
+        modCount++;
     }
 
     @Override
@@ -158,6 +162,7 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
         }
 
         size--;
+        modCount++;
         return element;
     }
 
@@ -178,6 +183,7 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
             newTail.setNextNode(null);
         }
         size--;
+        modCount++;
         return retVal;
     }
 
@@ -205,6 +211,40 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
         }
         str.append("]");
         return str; 
+    }
+    
+    /**
+     * Basic Iterator for IUSingleLinkedList.
+     */
+    private class SLLIterator implements Iterator<T> {
+        private Node<T> nextNode;
+        private int iterModCount;
+
+        /**
+         * Initialize Iterator before first element.
+         */
+        public SLLIterator() {
+            nextNode = head;
+            iterModCount = modCount;
+        }
+        @Override
+        public boolean hasNext() {
+            if (iterModCount != modCount) {
+                throw new ConcurrentModificationException();
+            }
+            return nextNode != null;
+        }
+
+        @Override
+        public T next() {
+            if (hasNext()) {
+                throw new NoSuchElementException();
+            }
+            T retVal = nextNode.getElement();
+            nextNode = nextNode.getNextNode();
+            return retVal;
+        }
+        
     }
 
 }
