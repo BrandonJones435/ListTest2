@@ -171,8 +171,39 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T remove(T element) {
-        // TODO Auto-generated method stub
-        return null;
+        if (isEmpty()) {
+            throw new NoSuchElementException("There is nothing in this list no remove! You've already taken Everything!");
+        }
+        T removedElement; // Initialize the element we are removing
+        // If you element is at the head 
+        if (head.getElement().equals(element)) {
+            removedElement = head.getElement();
+            head = head.getNextNode();
+            // If you remove the head then set your tail also to null
+            if (head == null) {
+                tail = null;
+            }
+            size--;
+            modCount++;
+            return removedElement;
+        }
+        // If the element is not the head then traverse
+        Node<T> previous = head;
+        Node<T> current = head.getNextNode();
+
+        while (current != null && current.getElement().equals(element)) {
+            removedElement = current.getElement();
+            previous.setNextNode(current.getNextNode()); // Essentially setting the node with the element to death
+            if (current == tail) {
+                tail = previous;
+            }
+            size--;
+            modCount++;
+            return removedElement;
+        }
+
+        // If after all of our efforts we did not find the element
+        throw new NoSuchElementException("There is no element like that in here!");
     }
 
     @Override
