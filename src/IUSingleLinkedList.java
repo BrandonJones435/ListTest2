@@ -33,14 +33,39 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public void add(int index, T element) {
-        // TODO Auto-generated method stub
-        
+        Node<T> newNode = new Node<>(element);
+        Node<T> current = head;
+        // Moving to the node right before the spot we insert the new node
+        for (int i = 0; i < index - 1; i++) {
+            current = current.getNextNode();
+        }
+        newNode.setNextNode(current.getNextNode());
+        current.setNextNode(newNode);
+        size++;
+        modCount++;
     }
 
     @Override
     public void addAfter(T element, T target) {
-        // TODO Auto-generated method stub
-        
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        Node<T> newNode = new Node<>(element);
+        Node<T> current = head; 
+        // Traversing to the node right before our target 
+        while (current != null && !current.getElement().equals(target)) {
+            current = current.getNextNode();
+        }
+        if (current == null) {
+            throw new NoSuchElementException();
+        }
+        newNode.setNextNode(current.getNextNode());
+        current.setNextNode(newNode);
+        if (current == tail) {
+            tail = newNode;
+        }
+        size++;
+        modCount++;
     }
 
     public void addToFront(T element) {
@@ -112,7 +137,9 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public boolean isEmpty() {
-        // TODO Auto-generated method stub
+        if (head == null) {
+            return true;
+        }
         return false;
     }
 
@@ -150,8 +177,35 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T remove(int index) {
-        // TODO Auto-generated method stub
-        return null;
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Your index is way too big or small! Not sure which one");
+        }
+        T removedElement;
+        // If we are removing the first element in the list 
+        if (index == 0) {
+            removedElement = head.getElement();
+            head = head.getNextNode();
+            // If the list becomes empty
+            if (head == null) {
+                tail = null;
+            }
+        } else {
+            Node<T> current = head;
+            // Traverse to the node before the node you want removed
+            for (int i = 0; i < index - 1; i++) {
+            current = current.getNextNode();
+            }
+            // Remove the element after the current node 
+            removedElement = current.getNextNode().getElement();
+            current.setNextNode(current.getNextNode().getNextNode());
+            // If the node we removed then update the tail reference
+            if (current.getNextNode() == null) {
+                tail = current;
+            }
+        }
+        size--;
+        modCount++;
+        return removedElement;
     }
 
     @Override
