@@ -19,8 +19,16 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
     private boolean canRemove = true; 
     @Override
     public void add(T element) {
-        // TODO Auto-generated method stub
-        
+        Node<T> newNode = new Node<>(element);
+        if (head == null) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            tail.setNextNode(newNode);
+            tail = newNode;
+        }
+        size++;
+        modCount++;
     }
 
     @Override
@@ -91,20 +99,15 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
     public int indexOf(T element) {
         Node<T> currentNode = head; 
         int currentIndex = 0;
-        boolean foundIt = false; 
-        while(currentNode != null && !foundIt) {
-            if (currentNode.getElement().equals(element);) {
-                foundIt = true;
+        while(currentNode != null) {
+            if (currentNode.getElement().equals(element)) {
+                return currentIndex;
             }  else {
                 currentNode = currentNode.getNextNode();
                 currentIndex++;
             }
         }
-        if (!foundIt) {
-            currentIndex = -1; 
-        } else {
-            return currentIndex; 
-        }
+        return -1;
     }
 
     @Override
@@ -196,7 +199,7 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public int size() {
-        return size == 0;
+        return size;
     }
     @Override
     public String toString() {
@@ -211,14 +214,13 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
             str.delete(str.length()-2, str.length());
         }
         str.append("]");
-        return str; 
+        return str.toString(); 
     }
     
     /**
      * Basic Iterator for IUSingleLinkedList.
      */
     private class SLLIterator implements Iterator<T> {
-        private T element = element;
         private Node<T> nextNode;
         private Node<T> previousNode;
         private int iterModCount;
@@ -265,12 +267,12 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
                 }
             } else {
                 Node<T> prevPrevNode = head; 
-                while (prePrevNode.getNextNode().getNextNode() != nextNode) {
+                while (prevPrevNode.getNextNode().getNextNode() != nextNode) {
                     prevPrevNode = prevPrevNode.getNextNode();
                 }
                 prevPrevNode.setNextNode(nextNode);
                 if (nextNode == null) {
-                    tail = prePrevNode;
+                    tail = prevPrevNode;
                 }
             }
             size--;
