@@ -33,7 +33,10 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
         if(index < 0 || index > size) {
             throw new IndexOutOfBoundsException();
         }
-        System.arraycopy(data, index, data, index + 1, size - index);
+        // Shift elements to the right
+        for (int i = size - 1; i >= index; i--) {
+            data[i + 1] = data[i];
+        }
         data[index] = element;
         size++;
         modCount++;
@@ -132,13 +135,16 @@ public class IUArrayList<T> implements IndexedUnsortedList<T> {
         }
         T removed = data[index];
         System.arraycopy(data, index + 1, data, index, size - index - 1);
-        data[--size] = null; // Help garbage collection.
+        data[--size] = null; 
         modCount++;
         return removed;
     }
     
     @Override
-    public T removeFirst() {
+    public T removeFirst() { 
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
         return remove(0);
     }
     
