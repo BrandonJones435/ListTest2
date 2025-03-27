@@ -1,5 +1,6 @@
 import java.util.Iterator;
 import java.util.ListIterator;
+import java.util.NoSuchElementException;
 
 /**
  * Double-linked-node-based implementation of IndexedUnsortedlist.
@@ -22,8 +23,7 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public void add(T element) {
-        // TODO Auto-generated method stub
-        
+        addToRear(element);
     }
 
     @Override
@@ -34,8 +34,35 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public void addAfter(T element, T target) {
-        // TODO Auto-generated method stub
-        
+        Node<T> newNode = new Node<T>(element);
+        if (size == 0) {
+            throw new NoSuchElementException("Target is not in the list");
+        }
+        Node<T> currentNode = head;
+        boolean targetFound = false;
+        // Traverse to find the element attached to the node current
+        while (targetFound == false && currentNode.getNextNode() != null) {
+            if (currentNode.getElement().equals(null)) {
+                targetFound = true;
+            } else {
+                currentNode = currentNode.getNextNode();
+            }
+        }
+        if (targetFound) {
+            newNode.setNextNode(currentNode.getNextNode());
+            newNode.setPreviousNode(currentNode);
+            if (currentNode == tail) {
+                tail = newNode;
+            } else {
+                newNode.getNextNode().setPreviousNode(newNode);
+                currentNode.setNextNode(newNode); 
+            }
+        } else {
+            throw new NoSuchElementException();
+        }
+        newNode = currentNode.getNextNode();
+        size++; 
+        modCount++;
     }
 
     @Override
@@ -46,8 +73,16 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public void addToRear(T element) {
-        // TODO Auto-generated method stub
-        
+        Node<T> newNode = new Node<T>(element); 
+        newNode.setPreviousNode(tail);
+        if (isEmpty()) {
+            head = newNode;
+        } else {
+            tail.setNextNode(newNode);
+        }
+        tail = newNode;
+        size++;
+        modCount++;
     }
 
     @Override
@@ -124,8 +159,19 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
     @Override
     public T removeLast() {
-        // TODO Auto-generated method stub
-        return null;
+        if (isEmpty()) {
+            throw new NoSuchElementException();
+        }
+        T retVal = tail.getElement();
+        if (size == 1) {
+            head = null;
+        } else {
+            tail.getPreviousNode().setNextNode(null);
+            tail = tail.getPreviousNode();
+        }
+        size--;
+        modCount++;
+        return retVal;
     }
 
     @Override
