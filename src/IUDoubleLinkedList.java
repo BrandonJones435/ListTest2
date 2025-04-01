@@ -316,38 +316,38 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         }
         
         // Find the node containing the element and checks for null value and handles it 
-        Node<T> current = head;
+        Node<T> currentNode = head;
         boolean isEqual = false;
-        while(current != null) {
+        while(currentNode!= null) {
             if (isEqual) {
-                isEqual = (current.getElement() == null);
+                isEqual = (currentNode.getElement() == null);
             } else {
-                isEqual = element.equals(current.getElement());
+                isEqual = element.equals(currentNode.getElement());
             }
             if (isEqual) { // If we found the element then get out of the loop
                 break;
             }
-            current = current.getNextNode();
+            currentNode= currentNode.getNextNode();
         }
-        if (current == null) {
+        if (currentNode== null) {
             throw new NoSuchElementException();
         }
 
-        T retVal = current.getNextNode().getElement(); // Return the element that we took out
+        T retVal = currentNode.getNextNode().getElement(); // Return the element that we took out
 
         // If we only have one node in the list and it is the one we are removing
-        if (head == current && tail == current) {
+        if (head == currentNode&& tail == currentNode) {
             head = null; 
             tail = null;
-        } else if (current == head) { // Removing the head
+        } else if (currentNode== head) { // Removing the head
             head = head.getNextNode();
             head.setPreviousNode(null);
-        } else if (current == tail) { // Removing the tail
+        } else if (currentNode== tail) { // Removing the tail
             tail = tail.getPreviousNode();
             tail.setNextNode(null);
         } else {
-            current.getPreviousNode().setNextNode(current.getNextNode());
-            current.getNextNode().setPreviousNode(current.getPreviousNode());
+            currentNode.getPreviousNode().setNextNode(currentNode.getNextNode());
+            currentNode.getNextNode().setPreviousNode(currentNode.getPreviousNode());
         }
 
         size--;
@@ -362,11 +362,11 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
         }
-        if (index == 0) {
-            removeFirst();
+        if (index == 0) {;
+            return removeFirst();
         }
         if (index == (size - 1)) { // If last element of the list 
-            removeLast();
+            return removeLast();
         }
         T retVal; // Return the element that we removed
         Node<T> currentNode = head;
@@ -420,12 +420,6 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
     public void set(int index, T element) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
-        }
-        if (index == 0) {
-            head.setElement(element);
-        }
-        if (index == size - 1) {
-            tail.setElement(element);
         }
         Node<T> currentNode = head;
         for (int i = 0; i < index; i++) {
