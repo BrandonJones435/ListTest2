@@ -73,27 +73,10 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
             throw new NoSuchElementException("Target is not in the list");
         }
         Node<T> currentNode = head;
-        boolean targetFound = false;
         // Traverse to find the element attached to the node current
-        while (targetFound == false && currentNode.getNextNode() != null) {
-            if (currentNode.getElement().equals(null)) {
-                targetFound = true;
-            } else {
-                currentNode = currentNode.getNextNode();
-            }
-        }
-        if (targetFound) {
-            newNode.setNextNode(currentNode.getNextNode());
-            newNode.setPreviousNode(currentNode);
-            if (currentNode == tail) {
-                tail = newNode;
-            } else {
-                newNode.getNextNode().setPreviousNode(newNode);
-                currentNode.setNextNode(newNode); 
-            }
-        } else {
-            throw new NoSuchElementException();
-        }
+        
+        // TO-DO 
+
         newNode = currentNode.getNextNode();
         size++; 
         modCount++;
@@ -314,45 +297,29 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         if (isEmpty()) {
             throw new NoSuchElementException();
         }
-        
         // Find the node containing the element and checks for null value and handles it 
         Node<T> currentNode = head;
-        boolean isEqual = false;
-        while(currentNode!= null) {
-            if (isEqual) {
-                isEqual = (currentNode.getElement() == null);
-            } else {
-                isEqual = element.equals(currentNode.getElement());
-            }
-            if (isEqual) { // If we found the element then get out of the loop
-                break;
-            }
-            currentNode= currentNode.getNextNode();
+        while (!currentNode.getElement().equals(element) && currentNode.getNextNode() != null) {
+                currentNode = currentNode.getNextNode();      
         }
-        if (currentNode== null) {
+        // Feed the removed node and element to the hungry trash collector
+        if  (!currentNode.getElement().equals(element)) {
             throw new NoSuchElementException();
         }
-
-        T retVal = currentNode.getNextNode().getElement(); // Return the element that we took out
-
-        // If we only have one node in the list and it is the one we are removing
-        if (head == currentNode&& tail == currentNode) {
-            head = null; 
-            tail = null;
-        } else if (currentNode== head) { // Removing the head
-            head = head.getNextNode();
+        else if (currentNode == head) {
+            head = currentNode.getNextNode();
             head.setPreviousNode(null);
-        } else if (currentNode== tail) { // Removing the tail
-            tail = tail.getPreviousNode();
+        }
+        else if (currentNode == tail) {
+            tail = currentNode.getPreviousNode();
             tail.setNextNode(null);
         } else {
             currentNode.getPreviousNode().setNextNode(currentNode.getNextNode());
             currentNode.getNextNode().setPreviousNode(currentNode.getPreviousNode());
         }
-
         size--;
         modCount++;
-        return retVal;
+        return element;
     }
 
     @Override
@@ -362,10 +329,10 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException();
         }
-        if (index == 0) {;
+        else if (index == 0) {
             return removeFirst();
         }
-        if (index == (size - 1)) { // If last element of the list 
+        else if (index == (size - 1)) { // If last element of the list 
             return removeLast();
         }
         T retVal; // Return the element that we removed
