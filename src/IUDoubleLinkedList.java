@@ -355,14 +355,45 @@ public class IUDoubleLinkedList<T> implements IndexedUnsortedList<T> {
 
         @Override
         public void set(T e) {
-            throw new UnsupportedOperationException();
+            checkForConcurrentModification();
+            if (lastReturned == null) {
+                throw new IllegalStateException();
+            }
+            lastReturned.setElement(e);
         }
 
         @Override
         public void add(T e) {
             checkForConcurrentModification();
-            throw new UnsupportedOperationException();
+            Node<T> newNode = new Node<>(e);
+
+            // If we are adding to an empty list 
+            if (head == null) {
+                head = newNode; 
+                tail = newNode;
+            } 
+            // If we are adding before the head
+            else if (nextNode == head) {
+                newNode.setNextNode(head);
+                head.setPreviousNode(newNode);
+                head = newNode;
+            }
+            // If we are adding at the end
+            else if (nextNode == null) {
+                tail.setNextNode(newNode);
+                newNode.setPreviousNode(tail);
+                tail = newNode;
+            }
+            // Inserting in the middle 
+            else {
+                Node<T> prev = nextNode.getPreviousNode();
+                newNode.setPreviousNode(prev);
+                newNode.setNextNode(nextNode);
+                prev.setNextNode(newNode);
+                nextNode.setPreviousNode(newNode);
+            }
         }
+
     }
 
     @Override
