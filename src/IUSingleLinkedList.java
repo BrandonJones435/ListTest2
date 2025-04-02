@@ -329,7 +329,6 @@ public class IUSingleLinkedList<T> implements IndexedUnsortedList<T> {
     }
     @Override
     public String toString() {
-        //return ""; //TODO format: "[A, B, C]"
         StringBuilder str = new StringBuilder();
         str.append("["); 
         for(T element : this) {
