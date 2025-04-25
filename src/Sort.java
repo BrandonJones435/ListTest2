@@ -69,6 +69,7 @@ public class Sort
 	private static <T extends Comparable<T>> void mergesort(IndexedUnsortedList<T> list)
 	{
 		// TODO: Implement recursive mergesort algorithm 
+		System.out.print("This is the mergesort class!");
 	}
 		
 	/**
@@ -87,6 +88,7 @@ public class Sort
 	private static <T> void mergesort(IndexedUnsortedList<T> list, Comparator<T> c)
 	{
 		// TODO: Implement recursive mergesort algorithm using Comparator
+		System.out.print("This is the mergesort Comparator class!");
 
 	}
 	
