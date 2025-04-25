@@ -18,7 +18,7 @@ public class Sort
 	 */
 	private static <T> IndexedUnsortedList<T> newList() 
 	{
-		return new WrappedDLL<T>(); //TODO: replace with your IUDoubleLinkedList for extra-credit
+		return new IUDoubleLinkedList<T>();
 	}
 	
 	/**
@@ -54,7 +54,62 @@ public class Sort
 	{
 		mergesort(list, c);
 	}
-	
+	/** 
+	 * Merge method to be used in Mergesort algorithm. It compares the left and
+	 * right side of list to be used when they are down to one or less elements. 
+	 * Then based on which size has the the generics size adds the smaller one to
+	 * the left and the larger to the right. 
+	 * 
+	 * @param <T> The type of element in my list 
+	 * 
+	 * @param left a sorted IndexedUnsortedList<T> whose contents will be merged;
+	 * 
+	 * @param left a sorted IndexedUnsortedList<T> whose contents will be merged;
+	 * 
+	 * @param list a sorted IndexedUnsortedList<T> where left and right will be merged into;
+	 */
+
+	 private static <T extends Comparable<? super T>> void merge (
+		IndexedUnsortedList<T> left, 
+		IndexedUnsortedList<T> right, 
+		IndexedUnsortedList<T> list) 
+		{
+    	// as long as both sides have elements
+		while (!left.isEmpty() && !right.isEmpty()) {
+			// compare the first elements
+			if (left.get(0).compareTo(right.get(0)) <= 0) {
+				list.add(left.removeFirst());
+			} else {
+				list.add(right.removeFirst());
+			}
+		}
+		// drain whichever remains
+		while (!left.isEmpty())  list.add(left.removeFirst());
+		while (!right.isEmpty()) list.add(right.removeFirst());
+	}
+	    /**
+     * Merge method using a Comparator.
+     */
+	private static <T> void merge(
+        IndexedUnsortedList<T> left,
+        IndexedUnsortedList<T> right,
+        IndexedUnsortedList<T> list,
+        Comparator<? super T> c)
+     {
+         while (!left.isEmpty() && !right.isEmpty()) {
+             if (c.compare(left.get(0), right.get(0)) <= 0) {
+                 list.add(left.removeFirst());
+             } else {
+                 list.add(right.removeFirst());
+             }
+         }
+         while (!left.isEmpty()) {
+             list.add(left.removeFirst());
+         }
+         while (!right.isEmpty()) {
+             list.add(right.removeFirst());
+         }
+     }
 	/**
 	 * Mergesort algorithm to sort objects in a list 
 	 * that implements the IndexedUnsortedList interface, 
@@ -66,11 +121,25 @@ public class Sort
 	 * @param list
 	 *            The list to be sorted, implements IndexedUnsortedList interface 
 	 */
-	private static <T extends Comparable<T>> void mergesort(IndexedUnsortedList<T> list)
-	{
-		// TODO: Implement recursive mergesort algorithm 
-		System.out.print("This is the mergesort class!");
-	}
+	private static <T extends Comparable<T>> void mergesort(IndexedUnsortedList<T> list) {
+        int n = list.size();
+        if (n <= 1) return;
+
+        IndexedUnsortedList<T> left = newList();
+        IndexedUnsortedList<T> right = newList();
+        int mid = n / 2;
+        for (int i = 0; i < mid; i++) {
+            left.add(list.removeFirst());
+        }
+        while (!list.isEmpty()) {
+            right.add(list.removeFirst());
+        }
+
+        mergesort(left);
+        mergesort(right);
+
+        merge(left, right, list);
+    }
 		
 	/**
 	 * Mergesort algorithm to sort objects in a list 
@@ -87,9 +156,20 @@ public class Sort
 	 */
 	private static <T> void mergesort(IndexedUnsortedList<T> list, Comparator<T> c)
 	{
-		// TODO: Implement recursive mergesort algorithm using Comparator
-		System.out.print("This is the mergesort Comparator class!");
-
-	}
+		int n = list.size();
+		if (n <= 1) return;
 	
+		IndexedUnsortedList<T> left  = newList();
+		IndexedUnsortedList<T> right = newList();
+		int mid = n / 2;
+		for (int i = 0; i < mid; i++)
+			left.add(list.remove(0));
+		while (list.size() > 0)
+			right.add(list.remove(0));
+	
+		mergesort(left, c);
+		mergesort(right, c);
+	
+		merge(left, right, list, c);
+	}
 }
